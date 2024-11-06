@@ -1,5 +1,5 @@
-class contatos():
- def __init__(self, id, nome, email, telefone):
+class Contatos():
+    def __init__(self, id, nome, email, telefone):
         self.id = id
         self.nome = nome
         self.email = email
@@ -11,10 +11,10 @@ class contatos():
     def nome(self):
         return self.nome
 
-     def email(self):
+    def email(self):
         return self.email
 
-     def telefone(self):
+    def telefone(self):
         return self.telefone
 
 

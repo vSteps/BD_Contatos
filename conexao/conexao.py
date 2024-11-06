@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2 import sql
 from psycopg2 import OperationalError
-from modelos.contatos import contato
+from modelos.contatos import Contatos
 
 
 class Conexao:
@@ -26,50 +26,10 @@ class Conexao:
             print("Conexão ao banco de dados PostgreSQL realizada com sucesso")
         except OperationalError as e:
             print(f"Ocorreu um erro ao conectar ao banco de dados: {e}")
+            raise
 
 
-def adicionar_contato(self, contato):
-    if self.conexao is None:
-        print("Não há conexão com o banco de dados.")
-        return []
-
-    try:
-        cursor = self.conexao.cursor()
-        query = """
-            INSERT INTO contatos (contato.nome, contato.email, contato.telefone) VALUES (%s, %s, %s)
-        """
-        cursor.execute(query, (contato.nome, contato.email, contato.telefone))
-        self.conexao.commit()
-        cursor.close()
-        print("Contato adicionado com sucesso.")
-        return []
-    except OperationalError as e:
-        print(f"Ocorreu um erro ao adicionar o contato: {e}")
-        return []
-
-        
-        
-def mostrar_um_contato(self, id):
-    if self.conexao is None:
-        print("Não há conexão com o banco de dados.")
-        return []
-
-    try:
-        cursor = self.conexao.cursor()
-        query = """
-            SELECT * FROM contatos WHERE id_ VALUES (%s, %s, %s)
-        """
-        cursor.execute(query, (nome, email, telefone))
-        self.conexao.commit()
-        cursor.close()
-        print("Contato adicionado com sucesso.")
-        return []
-    except OperationalError as e:
-        print(f"Ocorreu um erro ao adicionar o contato: {e}")
-        return []
-
-        
-    def obter_clientes_por_data(self, data_inicio, data_fim):
+    def adicionar_contato(self, Contatos):
         if self.conexao is None:
             print("Não há conexão com o banco de dados.")
             return []
@@ -77,18 +37,92 @@ def mostrar_um_contato(self, id):
         try:
             cursor = self.conexao.cursor()
             query = """
-                SELECT DISTINCT clientes.*
-                    FROM clientes
-                    JOIN pedidos ON clientes.id = pedidos.cliente_id
-                    WHERE pedidos.data_pedido BETWEEN %s AND %s
+                INSERT INTO contatos (nome, email, telefone) VALUES (%s, %s, %s)
             """
-            cursor.execute(query, (data_inicio,data_fim,))
-            resultSet = cursor.fetchall()
-            clientes = []
-            for row in resultSet:
-                clientes.append(Cliente(row[0], row[1], row[2], row[3], row[4]))
+            cursor.execute(query, (Contatos.nome, Contatos.email, Contatos.telefone))
+            self.conexao.commit()
             cursor.close()
-            return clientes
-        except OperationalError as e:
-            print(f"Ocorreu um erro ao consultar os itens do pedido: {e}")
+            print("Contato adicionado com sucesso.")
             return []
+        except OperationalError as e:
+            print(f"Ocorreu um erro ao adicionar o contato: {e}")
+            return []
+    
+
+    def mostrar_um_contato(self, contato_id):
+        if self.conexao is None:
+            print("Não há conexão com o banco de dados.")
+            return []
+
+        try:
+            cursor = self.conexao.cursor()
+            query = """
+                SELECT * FROM contatos WHERE id = %s
+            """
+            cursor.execute(query, (contato_id))
+            resultado = cursor.fetchone()
+            cursor.close()
+
+            if resultado:
+                return Contatos(id=resultado[0], nome=resultado[1], email=resultado[2], telefone=resultado[3])
+            else:
+                print("Contato não encontrado.")
+                return []
+        except OperationalError as e:
+            print(f"Ocorreu um erro ao buscar o contato: {e}")
+            return []
+   
+    def mostrar_todos_contatos(self):
+        if self.conexao is None:
+            print("Não há conexão com o banco de dados.")
+            return []
+
+        try:
+            cursor = self.conexao.cursor()
+            query = "SELECT * FROM contatos"
+            cursor.execute(query)
+            contatos_data = cursor.fetchall()
+            cursor.close()
+
+            contatos = [Contatos(id=linha[0], nome=linha[1], email=linha[2], telefone=linha[3]) for linha in contatos_data]
+
+            return contatos
+        except Exception as e:
+            print(f"Ocorreu um erro ao buscar os contatos: {e}")
+            return []
+
+    def atualizar_contato(self, contato):
+        if self.conexao is None:
+            print("Não há conexão com o banco de dados.")
+            return []
+
+        try:
+            cursor = self.conexao.cursor()
+            query = """
+                UPDATE contatos SET nome = %s, email = %s, telefone = %s WHERE id =  %s
+            """
+            cursor.execute(query, (Contatos.nome, Contatos.email, Contatos.telefone, Contatos.id))
+            self.conexao.commit()
+            cursor.close()
+            print("Contato atualizado com sucesso.")
+            return []
+        except OperationalError as e:
+            print(f"Ocorreu um erro ao atualizar o contato: {e}")
+            return []
+    
+    def deletar_contato(self, contato_id):
+        if self.conexao is None:
+            print("Não há conexão com o banco de dados.")
+            return False
+
+        try:
+            cursor = self.conexao.cursor()
+            query = "DELETE FROM contatos WHERE id = %s"
+            cursor.execute(query, (contato_id,)) 
+            self.conexao.commit()
+            cursor.close()
+            print("Contato deletado com sucesso.")
+            return True
+        except Exception as e:
+            print(f"Ocorreu um erro ao deletar o contato: {e}")
+            return False
