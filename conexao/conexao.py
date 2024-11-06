@@ -59,7 +59,7 @@ class Conexao:
             query = """
                 SELECT * FROM contatos WHERE id = %s
             """
-            cursor.execute(query, (contato_id))
+            cursor.execute(query, (contato_id,)) 
             resultado = cursor.fetchone()
             cursor.close()
 
@@ -71,7 +71,7 @@ class Conexao:
         except OperationalError as e:
             print(f"Ocorreu um erro ao buscar o contato: {e}")
             return []
-   
+    
     def mostrar_todos_contatos(self):
         if self.conexao is None:
             print("Não há conexão com o banco de dados.")

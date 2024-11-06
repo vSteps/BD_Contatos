@@ -1,7 +1,7 @@
 from conexao.conexao import Conexao
 from modelos.contatos import Contatos
 
-conn = Conexao("contatos", "postgres", "postgres", "localhost", "5432")
+conn = Conexao("contatos", "postgres", "postgres123banco", "localhost", "5432")
 conn.conectar()
 
 if __name__ == "__main__":

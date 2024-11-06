@@ -19,4 +19,4 @@ class Contatos():
 
 
     def __str__(self):
-        return f"Cliente(id={self.id}, nome={self.nome}, email={self.email}, telefone={self.telefone})"
+        return f"Contato(id={self.id}, nome={self.nome}, email={self.email}, telefone={self.telefone})"
